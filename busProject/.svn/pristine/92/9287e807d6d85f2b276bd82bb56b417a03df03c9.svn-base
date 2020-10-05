@@ -1,0 +1,33 @@
+package chatbots;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+// 테스트를 위한 클래스
+@WebServlet("/sessunreg")
+public class SessUnreg extends HttpServlet {
+	
+	private static final long serialVersionUID = 1L;
+	
+	public SessUnreg() {
+		super();
+	}
+	
+	
+	// 요청되면 TestSession이름으로 세션을 제거한다.
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.getSession().setAttribute("TestSession", null);
+		res.getWriter().append("Session Unregister\n");
+		res.getWriter().append("sess = " + (String) req.getSession().getAttribute("TestSession"));
+		System.out.println("sess = " + (String) req.getSession().getAttribute("TestSession"));
+	}
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doGet(req, res);
+	}
+}

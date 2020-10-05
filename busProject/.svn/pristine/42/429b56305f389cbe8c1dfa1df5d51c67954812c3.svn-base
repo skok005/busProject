@@ -1,0 +1,74 @@
+package FaQ;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.omg.PortableInterceptor.DISCARDING;
+
+import FaQ.FaQDTO;
+import FaQ.FaQDAO;
+
+@WebServlet("/FaQDetail.do")
+public class FaQDetailController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doUser(request,response);
+	}//doGet END
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doUser(request,response);
+	}//doPost END
+	
+	protected void doUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		
+		int rn = Integer.parseInt(request.getParameter("rn"));
+		
+		FaQDAO dao = new FaQDAO();
+		FaQDTO dto = dao.FaQDetail(rn);
+		int no = dto.getNo();
+		String title = dto.getTitle();
+		Date date = dto.getDate();
+		Date editDate = dto.getEditDate();
+		String content = dto.getContent();
+		
+		request.setAttribute("rn", rn);
+		request.setAttribute("no", no);
+		request.setAttribute("title", title);
+		request.setAttribute("date", date);
+		request.setAttribute("editDate", editDate);
+		request.setAttribute("content", content);
+		
+		//-----------------다음글-------------------
+		FaQDTO dtoP = dao.FaQDetail(rn+1);
+		String titleP = dtoP.getTitle();
+		int noP = dtoP.getNo();
+		request.setAttribute("titleP", titleP);
+		request.setAttribute("noP", noP);
+		//----------------------------------------!
+		
+		//-----------------이전글-------------------
+		FaQDTO dtoN = dao.FaQDetail(rn-1);
+		String titleN = dtoN.getTitle();
+		int noN = dtoN.getNo();
+		request.setAttribute("titleN", titleN);
+		request.setAttribute("noN", noN);
+		//----------------------------------------!
+		
+		RequestDispatcher dis = request.getRequestDispatcher("FaQ/FaQDetail.jsp");
+		dis.forward(request, response);
+		
+	}//doUser END
+	
+}//FaQController class END
